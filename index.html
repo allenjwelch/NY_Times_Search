@@ -15,6 +15,11 @@
         margin: 5px;
       }
 
+      #articleHeading {
+        font-weight: bold; 
+        font-size: 18px; 
+      }
+
  
     </style>
 </head>
@@ -33,6 +38,7 @@
         <div id="col1" class="col-lg-10">
           <div  class="panel panel-default">
             <div class = "panel-body">
+              
               <div class="form-group">
                 <label for="headlineID">Headline</label>
                 <input type="headline" class="form-control" id="headlineID" placeholder="Headline Search" name="email">
@@ -49,8 +55,9 @@
                 <label for="endDateID">End Date Search (optional)</label>
                 <input type="endDate" class="form-control" id="endDateID" placeholder="End Date Search" name="End Date">
               </div>
-              <button type="submit" class="btn btn-default">Search</button>
-
+              <button type="submit" id ="submit" class="btn btn-default">Search</button>
+              <button type="button" id = "clear" class="btn btn-default">Clear</button>
+              
             </div>
           </div>
         </div>
@@ -60,7 +67,7 @@
 
     </div>
       <script>
-        $("button").on("click", function(){
+        $("#submit").on("click", function(){
 
           console.log("button-click");
 
@@ -75,31 +82,32 @@
               url: queryURL,
               method: 'GET',
           }).done(function(result) {
-
-              for (var i = 0; i < result.response.docs.length; i++) {
-
-                var newDiv = $('<div  class="panel panel-default">');
-                var newHead = $('<div id ="articleHeading" class = "panel-heading">');
-                var newSnip = $('<div id="snippet" class = "panel-body">');
-
-                newDiv.append(newHead);
-                newDiv.append(newSnip);
-                $("#col2").append(newDiv);
-
-                console.log()
-
-                newHead.append('Article Title: ' + result.response.docs[i].headline.main);
-                // $('#dateID').append('Date: ' + result.response.docs[i].pub_date);
-                newSnip.append('Article: ' + result.response.docs[i].snippet);
-                // $('#urlID').url('Read More: ' + result.response.docs[i].web_url);
-
+            for (var i = 0; i < result.response.docs.length; i++) {
+              var newDiv = $('<div  class="panel panel-default">');
+              var newHead = $('<div id ="articleHeading" class = "panel-heading">');
+              var newSnip = $('<div id="snippet" class = "panel-body">');
+              newDiv.append(newHead);
+              newDiv.append(newSnip);
+              $("#col2").append(newDiv);
+              newHead.append('<h2>').text(result.response.docs[i].headline.main);
+              // $('#dateID').append('Date: ' + result.response.docs[i].pub_date);
+              newSnip.append('<p>').text(result.response.docs[i].snippet);
+              newSnip.append('<a href=' + result.response.docs[i].web_url + '>Read More... </a>');
               }
-              console.log(result);
           }).fail(function(err) {
               throw err;
           });
 
         });
+
+        $("#clear").on("click", function() {
+          $('.form-group :input').val('');
+          // headlineID
+          // keywordID
+          // startDateID
+          // endDateID
+        }); 
+
       </script>
 
 </body>
