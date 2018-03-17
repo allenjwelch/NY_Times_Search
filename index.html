@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New York Times Search</title>
+    <!-- Reference to external CSS Reset Stylesheet -->
+    <!--<link rel="stylesheet" href="assets/CSS/reset.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Reference to external CSS Stylesheet -->
+    <!--<link rel="stylesheet" href="assets/CSS/style.css">-->
+    <!-- Added link to the jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+      * {
+        margin: 5px;
+      }
+
+ 
+    </style>
+</head>
+
+<body>
+
+  
+  
+  <div id="container" >
+    <div id="row0" class="row">
+        <div class="col-lg-10">
+            <h1>New York Times Article Search</h1>
+        </div>
+    </div>
+      <div id="row1" class="row">
+        <div id="col1" class="col-lg-10">
+          <div  class="panel panel-default">
+            <div class = "panel-body">
+              <div class="form-group">
+                <label for="headlineID">Headline</label>
+                <input type="headline" class="form-control" id="headlineID" placeholder="Headline Search" name="email">
+              </div>
+              <div class="form-group">
+                <label for="keywordID">Keyword</label>
+                <input type="keyword" class="form-control" id="keywordID" placeholder="Keyword Search" name="keyword">
+              </div>
+              <div class="form-group">
+                <label for="startDateID">Begin Date Search (optional)</label>
+                <input type="startDate" class="form-control" id="startDateID" placeholder="Begin Date Search" name="Begin Date">
+              </div>
+              <div class="form-group">
+                <label for="endDateID">End Date Search (optional)</label>
+                <input type="endDate" class="form-control" id="endDateID" placeholder="End Date Search" name="End Date">
+              </div>
+              <button type="submit" class="btn btn-default">Search</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="col2" class="col-lg-10"></div>
+
+    </div>
+      <script>
+        $("button").on("click", function(){
+
+          console.log("button-click");
+
+          var apiKey = "&api-key=4b63a7ebe9274d44ba67c68629de18e9";
+          var keywordInput = $("#keywordID").val();
+          var headlineInput = $("#headlineID").val();
+          var beginInput = $("#begin_dateID").val();
+          var endInput = $("#end_dateID").val();
+          var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput + apiKey;
+          console.log(queryURL); 
+          $.ajax({
+              url: queryURL,
+              method: 'GET',
+          }).done(function(result) {
+
+              for (var i = 0; i < result.response.docs.length; i++) {
+
+                var newDiv = $('<div  class="panel panel-default">');
+                var newHead = $('<div id ="articleHeading" class = "panel-heading">');
+                var newSnip = $('<div id="snippet" class = "panel-body">');
+
+                newDiv.append(newHead);
+                newDiv.append(newSnip);
+                $("#col2").append(newDiv);
+
+                console.log()
+
+                newHead.append('Article Title: ' + result.response.docs[i].headline.main);
+                // $('#dateID').append('Date: ' + result.response.docs[i].pub_date);
+                newSnip.append('Article: ' + result.response.docs[i].snippet);
+                // $('#urlID').url('Read More: ' + result.response.docs[i].web_url);
+
+              }
+              console.log(result);
+          }).fail(function(err) {
+              throw err;
+          });
+
+        });
+      </script>
+
+</body>
+</html>
