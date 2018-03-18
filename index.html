@@ -11,8 +11,27 @@
     <!-- Added link to the jQuery Library -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <style>
+
       * {
         margin: 5px;
+      }
+
+      h1{
+        font-size: 50px;
+        text-align: center;
+        color: white;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+      }
+
+      body{
+        width: 960px;
+        margin: 0 auto;
+      }
+
+      #nyt-label{
+        background-color: black;
+        padding: 20px;
+        border-radius: 15px;
       }
 
       #articleHeading {
@@ -30,12 +49,12 @@
   
   <div id="container" >
     <div id="row0" class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12" id="nyt-label">
             <h1>New York Times Article Search</h1>
         </div>
     </div>
       <div id="row1" class="row">
-        <div id="col1" class="col-lg-10">
+        <div id="col1" class="col-lg-12">
           <div  class="panel panel-default">
             <div class = "panel-body">
               
@@ -55,8 +74,8 @@
                 <label for="endDateID">End Date Search (optional)</label>
                 <input type="endDate" class="form-control" id="endDateID" placeholder="End Date Search" name="End Date">
               </div>
-              <button type="submit" id ="submit" class="btn btn-default">Search</button>
-              <button type="button" id = "clear" class="btn btn-default">Clear</button>
+              <button type="submit" id ="submit" class="btn btn-success">Search</button>
+              <button type="button" id = "clear" class="btn btn-info">Clear</button>
               
             </div>
           </div>
