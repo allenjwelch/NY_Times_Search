@@ -6,6 +6,7 @@
     <!-- Reference to external CSS Reset Stylesheet -->
     <!--<link rel="stylesheet" href="assets/CSS/reset.css">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Reference to external CSS Stylesheet -->
     <!--<link rel="stylesheet" href="assets/CSS/style.css">-->
     <!-- Added link to the jQuery Library -->
@@ -50,7 +51,7 @@
   <div id="container" >
     <div id="row0" class="row">
         <div class="col-lg-12" id="nyt-label">
-            <h1>New York Times Article Search</h1>
+            <h1><i style="font-size:48px" class="fa">&#xf1ea;</i>New York Times Article Search</h1>
         </div>
     </div>
       <div id="row1" class="row">
@@ -67,11 +68,11 @@
                 <input type="keyword" class="form-control" id="keywordID" placeholder="Keyword Search" name="keyword">
               </div>
               <div class="form-group">
-                <label for="startDateID">Begin Date Search (optional)</label>
+                <label for="startDateID">Begin Search Year (optional)</label>
                 <input type="startDate" class="form-control" id="startDateID" placeholder="Begin Date Search" name="Begin Date">
               </div>
               <div class="form-group">
-                <label for="endDateID">End Date Search (optional)</label>
+                <label for="endDateID">End Search Year (optional)</label>
                 <input type="endDate" class="form-control" id="endDateID" placeholder="End Date Search" name="End Date">
               </div>
               <button type="submit" id ="submit" class="btn btn-success">Search</button>
@@ -93,10 +94,36 @@
           var apiKey = "&api-key=4b63a7ebe9274d44ba67c68629de18e9";
           var keywordInput = $("#keywordID").val();
           var headlineInput = $("#headlineID").val();
-          var beginInput = $("#begin_dateID").val();
-          var endInput = $("#end_dateID").val();
-          var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput + apiKey;
-          console.log(queryURL); 
+          var beginInput = $("#startDateID").val() + '0101';
+          var endInput = $("#endDateID").val() + '0101';
+          var queryURL = ''; 
+
+          // PUB DATE
+          beginInput = '&begin_date=' + parseInt(beginInput); 
+          endInput = '&end_date=' + parseInt(endInput); 
+          console.log(beginInput); 
+          
+          if ($('#startDateID').val() && $('#endDateID').val()) {
+            console.log('begin and end date'); 
+            queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput +  beginInput + endInput + apiKey;
+              console.log(queryURL); 
+
+          } else if ($('#startDateID').val() || $('#endDateID').val()) {
+            console.log('either begin or end date'); 
+              if ($('#startDateID').val()) {
+                queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput +  beginInput + apiKey;
+                console.log(queryURL); 
+
+              } else if ($('#endDateID').val()) {
+                queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput +  endInput + apiKey;
+                console.log(queryURL); 
+              }
+          } else {
+            console.log('neither begin or end date'); 
+            queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + keywordInput + headlineInput + apiKey;
+            console.log(queryURL); 
+          }
+
           $.ajax({
               url: queryURL,
               method: 'GET',
@@ -105,19 +132,29 @@
               var newDiv = $('<div  class="panel panel-default">');
               var newHead = $('<div id ="articleHeading" class = "panel-heading">');
               var newSnip = $('<div id="snippet" class = "panel-body">');
+              // var date = result.response.docs[i].pub_date
+              
               newDiv.append(newHead);
               newDiv.append(newSnip);
               $("#col2").append(newDiv);
               newHead.append('<h2>').text(result.response.docs[i].headline.main);
-              // $('#dateID').append('Date: ' + result.response.docs[i].pub_date);
+              // $('#dateID').append('Date: ' + date);
               newSnip.append('<p>').text(result.response.docs[i].snippet);
-              newSnip.append('<a href=' + result.response.docs[i].web_url + '>Read More... </a>');
-              }
+              // newSnip.append('<p>').text('Date: ' ); 
+
+              // READMORE
+              var readMore = $('<a href>'); 
+              var readMore = $('<a href=' + result.response.docs[i].web_url + '>Read More... </a>');
+              readMore.attr('target', '_blank'); 
+              newSnip.append(readMore); 
+              // newSnip.append('<a href=' + result.response.docs[i].web_url + '>Read More... </a>');
+
+            }
           }).fail(function(err) {
               throw err;
           });
 
-        });
+          }); // END Submit click
 
         $("#clear").on("click", function() {
           $('.form-group :input').val('');
